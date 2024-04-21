@@ -1,4 +1,5 @@
 package com.jciterceros.DSCommerce.entities;
+
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -14,7 +15,7 @@ public class Category {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    private Set<Product> products =new HashSet<>();
+    private Set<Product> products = new HashSet<>();
 
     public Category() {
     }
