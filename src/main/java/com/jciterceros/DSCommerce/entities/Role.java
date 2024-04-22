@@ -29,7 +29,7 @@ public class Role implements GrantedAuthority {
     public void setId(Long id) {
         this.id = id;
     }
-
+    @Override
     public String getAuthority() {
         return authority;
     }
