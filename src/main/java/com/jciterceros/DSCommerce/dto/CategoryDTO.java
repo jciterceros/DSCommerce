@@ -3,6 +3,7 @@ package com.jciterceros.DSCommerce.dto;
 import com.jciterceros.DSCommerce.entities.Category;
 
 public class CategoryDTO {
+
     private Long id;
     private String name;
 

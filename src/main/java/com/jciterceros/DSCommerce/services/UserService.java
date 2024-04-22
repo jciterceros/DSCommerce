@@ -19,6 +19,7 @@ import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
+
     @Autowired
     private UserRepository repository;
 
@@ -47,13 +48,13 @@ public class UserService implements UserDetailsService {
             String username = jwtPrincipal.getClaim("username");
             return repository.findByEmail(username).get();
         } catch (Exception e) {
-            throw new UsernameNotFoundException("Email not found ");
+            throw new UsernameNotFoundException("Invalid user");
         }
     }
 
     @Transactional(readOnly = true)
     public UserDTO getMe() {
-        User user = authenticated();
-        return new UserDTO(user);
+        User entity = authenticated();
+        return new UserDTO(entity);
     }
 }

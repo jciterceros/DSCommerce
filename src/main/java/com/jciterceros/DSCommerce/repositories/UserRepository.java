@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+
     @Query(nativeQuery = true, value = """
             	SELECT tb_user.email AS username, tb_user.password, tb_role.id AS roleId, tb_role.authority
             	FROM tb_user
