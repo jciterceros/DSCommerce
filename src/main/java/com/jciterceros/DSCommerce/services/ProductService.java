@@ -1,10 +1,12 @@
 package com.jciterceros.DSCommerce.services;
 
 import com.jciterceros.DSCommerce.dto.ProductDTO;
+import com.jciterceros.DSCommerce.dto.ProductMinDTO;
 import com.jciterceros.DSCommerce.entities.Product;
 import com.jciterceros.DSCommerce.repositories.ProductRepository;
 import com.jciterceros.DSCommerce.services.exceptions.DatabaseException;
 import com.jciterceros.DSCommerce.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -12,8 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -23,36 +23,50 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductDTO findById(Long id) {
-        Optional<Product> result = repository.findById(id);
-        Product product = result.get();
-        ProductDTO dto = new ProductDTO(product);
-        return dto;
+//        Optional<Product> result = repository.findById(id);
+//        Product product = result.get();
+//        ProductDTO dto = new ProductDTO(product);
+//        return dto;
+        Product product = repository.findById(id).orElseThrow
+                (() -> new ResourceNotFoundException("Recurso não encontrado"));
+        return new ProductDTO(product);
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductDTO> findAll(String name, Pageable pageable) {
+    public Page<ProductMinDTO> findAll(String name, Pageable pageable) {
         Page<Product> result = repository.searchByName(name, pageable);
-        return result.map(x -> new ProductDTO(x));
+        return result.map(x -> new ProductMinDTO(x));
     }
 
     @Transactional
     public ProductDTO insert(ProductDTO dto) {
         Product entity = new Product();
-        entity.setName(dto.getName());
-        entity.setDescription(dto.getDescription());
-        entity.setPrice(dto.getPrice());
-        entity.setImgUrl(dto.getImgUrl());
-
+//        entity.setName(dto.getName());
+//        entity.setDescription(dto.getDescription());
+//        entity.setPrice(dto.getPrice());
+//        entity.setImgUrl(dto.getImgUrl());
+//
+//        entity = repository.save(entity);
+//        return new ProductDTO(entity);
+        copyDtoToEntity(dto, entity);
         entity = repository.save(entity);
         return new ProductDTO(entity);
     }
 
     @Transactional
     public ProductDTO update(Long id, ProductDTO dto) {
-        Product entity = repository.getReferenceById(id);
-        copyDtoToEntity(dto, entity);
-        entity = repository.save(entity);
-        return new ProductDTO(entity);
+//        Product entity = repository.getReferenceById(id);
+//        copyDtoToEntity(dto, entity);
+//        entity = repository.save(entity);
+//        return new ProductDTO(entity);
+        try {
+            Product entity = repository.getReferenceById(id);
+            copyDtoToEntity(dto, entity);
+            entity = repository.save(entity);
+            return new ProductDTO(entity);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
