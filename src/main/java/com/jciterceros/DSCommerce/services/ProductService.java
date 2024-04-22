@@ -1,7 +1,9 @@
 package com.jciterceros.DSCommerce.services;
 
+import com.jciterceros.DSCommerce.dto.CategoryDTO;
 import com.jciterceros.DSCommerce.dto.ProductDTO;
 import com.jciterceros.DSCommerce.dto.ProductMinDTO;
+import com.jciterceros.DSCommerce.entities.Category;
 import com.jciterceros.DSCommerce.entities.Product;
 import com.jciterceros.DSCommerce.repositories.ProductRepository;
 import com.jciterceros.DSCommerce.services.exceptions.DatabaseException;
@@ -86,5 +88,12 @@ public class ProductService {
         entity.setDescription(dto.getDescription());
         entity.setPrice(dto.getPrice());
         entity.setImgUrl(dto.getImgUrl());
+
+        entity.getCategories().clear();
+        for (CategoryDTO catDto : dto.getCategories()) {
+            Category cat = new Category();
+            cat.setId(catDto.getId());
+            entity.getCategories().add(cat);
+        }
     }
 }
